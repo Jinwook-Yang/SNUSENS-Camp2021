@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head>
+	<meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+		rel="stylesheet"
+		href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+		integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+		crossorigin="anonymous"
+	/>
+	<title>멘토 추첨</title>
+    <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+</head>
+<body>
+    <h2 style="background-color:coral; text-align: center;"><b>공헌 캠프 멘토 추첨 프로그램</b></h2>
+    <br>
+    <h5 style="text-align: center;">1. 멘토를 추가하기 전, 학부 추첨 목록을 설정하세요.</h5>
+    <h5 style="text-align: center;">2. 멘토 추가 버튼을 이용해 멘토의 이름과 학부를 입력하세요.</h6>
+    <h6 style="text-align: center; color: crimson;">* 버그 발생시 책임지지 않습니다. (만든이: 양진욱)</h6>
+    <br>
+    <div style="float:right; margin-right:20%">
+        <button type="button" class="btn btn-primary addMajorBtn" name="addMajorBtn">학부 전형 설정</button>
+        <button type="button" class="btn btn-primary addBtn" name="addBtn">멘토 추가</button>
+    </div>
+    <br><br>
+    <div class="targetMajorList"></div>
+    <div class="targetMentorList">
+        <table class="table table-hover" style="width:60%; margin-left: 20%">
+            <tr style="background-color:lightblue">
+                <th style="width:30%">이름<th>
+                <th style="width:30%">학부<th>
+                <th>수료/1포인트 여부<th>
+                <th>삭제<th>
+            </tr>
+        </table>  
+    </div>
+    <div style="float:right; margin-right:20%">
+        <button type="button" class="btn btn-primary startBtn" name="startBtn">Start</button>
+        <button type="button" class="btn btn-danger resetBtn" name="resetBtn">Reset</button>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="addModal">
+        <div class="modal-dialog" style="max-width: 600px;">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">지원자 추가</h4>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <th scope="row">이름</th>
+                    <td>
+                        <input type="text" class="form-control name" />
+                    </td>
+                    <br><th scope="row">학과</th><br>
+                    <td>
+                        <select id="major" class="form-control major" name="major">
+                            <option disabled selected value> 선택 </option>
+                            <option value="건환">건환</option> <option value="건축">건축</option> <option value="기계">기계</option> <option value="산공">산공</option>
+                            <option value="에자">에자</option> <option value="원핵">원핵</option> <option value="재료">재료</option> <option value="전기">전기</option>
+                            <option value="조선">조선</option> <option value="컴공">컴공</option> <option value="항공">항공</option> <option value="화생">화생</option>
+                        </select>
+                    </td>
+                    <br><th scope="row">수료 혹은 1포인트 이상 여부</th><br>
+                    <td>
+                        <input type="checkbox" class="bonus" value="true" style="vertical-align: middle; transform: scale(2); float: right;">
+                    </td>
+                    <br>
+                    <button class="btn btn-dark addProfileBtn">입력</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addMajorModal">
+        <div class="modal-dialog" style="max-width: 600px;">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">학부 전형 설정</h4>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <th scope="row">학과</th>
+                    <br>
+                    <td>
+                        <select id='majorPicker' title='All' class='form-control majorPicker' name='majorPicker' multiple placeholder='majorPicker' data-actions-box="true">
+                            <option value="건환">건환</option> <option value="건축">건축</option> <option value="기계">기계</option> <option value="산공">산공</option>
+                            <option value="에자">에자</option> <option value="원핵">원핵</option> <option value="재료">재료</option> <option value="전기">전기</option>
+                            <option value="조선">조선</option> <option value="컴공">컴공</option> <option value="항공">항공</option> <option value="화생">화생</option>
+                        </select>
+                    </td>
+                    <br><th scope="row">총 선발 인원 수</th><br>
+                    <td>
+                        <input type="text" class="form-control selectNumber" />
+                    </td>
+                    <br>
+                    <button class="btn btn-dark addMajorConfirmBtn">입력</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+		crossorigin="anonymous"
+	></script>
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+		integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+		crossorigin="anonymous"
+	></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.4.0/bootbox.min.js"></script>
+    <script>
+        let majorSelectList = [];
+        let mentorList = [];
+        let resultMentorList = [];
+        let selectNumber = 0;
+
+        const deleteRow = (ths) => {
+            var ths = $(ths);
+            let name = ths.attr('name');
+            let target = name.split('/');
+            for (let mentor of mentorList) {
+                if (target[0] === mentor.name && target[1] === mentor.major) {
+                    console.log(mentorList, mentorList.indexOf(mentor));
+                    mentorList.splice(mentorList.indexOf(mentor), 1);
+                    break;
+                }
+            }
+            ths.parents("tr").remove();
+        }
+
+        $(".majorPicker").mousedown(function(e){
+            e.preventDefault();
+
+            var select = this;
+            var scroll = select .scrollTop;
+
+            e.target.selected = !e.target.selected;
+
+            setTimeout(function(){select.scrollTop = scroll;}, 0);
+
+            $(select).focus();
+        }).mousemove(function(e){e.preventDefault()});
+    </script>
+    <script src="/js/main.js" type="module"></script>
+</body>
+</html>
